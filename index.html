@@ -82,40 +82,30 @@
             color: red;
         }
         .video-container {
-            margin: 0 auto;
-            display: block;
-            max-width: 100%;
+            text-align: left;
+        }
+        video {
+            max-width: 40%;
+            border-radius: 10px;
         }
     </style>
-
 </head>
 <body>
     <div class="overlay">
         <div class="container">
             <div class="header">
                 <h1 class="title-blue">¿SABES la Calidad del Agua del Grifo en tu Casa?</h1>
-                <img src="imagenes/filtro.jpg" alt="Filtros de Agua Purificada" style="max-width: 100%;">
+                <img src="imagenes/filtro.png" alt="Filtros de Agua Purificada">
                 <h1 class="title-red">Prueba GRATIS en FLORIDA, Agenda TU CITA!!!!</h1>
                 <p>Prueba tu agua de grifo sin costo y recibe un <strong>obsequio gratis</strong> solo por participar.</p> <!-- Obsequio destacado -->
             </div>
-	<!--   
-	<div class="video-container">
-            <iframe id="tiktok-video" src="https://www.tiktok.com/embed/7375944710193417518?autoplay=1" width="320" height="564" frameborder="0" allowfullscreen></iframe>
+            <div class="video-container">
+                <video id="promoVideo" controls>
+                    <source src="imagenes/citasfiltros.mp4" type="video/mp4">
+                    Tu navegador no soporta la reproducción de video.
+                </video>
             </div>
-
-	<div class="video-container">
-            <iframe id="tiktok-video" src="https://www.tiktok.com/embed/7375944710193417518?autoplay=1" width="320" height="564" frameborder="0" allowfullscreen></iframe>
-            </div>	
-
-	-->	
-
-<div class="video-container">
-    <video id="local-video" width="320" height="564" controls>
-        <source src="imagenes/citasfiltros.mp4" type="video/mp4">
-        Tu navegador no soporta la reproducción de video.
-    </video>
-</div>		
-	<div class="benefits">
+            <div class="benefits">
                 <h2>Beneficios</h2>
                 <ul>
                     <li>Descubre la calidad de tu agua de grifo</li>
@@ -133,7 +123,7 @@
             </div>
             <div class="contact">
                 <h2>Solicita tu Prueba Gratis</h2>
-                <form id="contactForm" action="https://script.google.com/macros/s/AKfycbyHt90woPGctXP4BKOcTS-e7s1YK0nCy2nIKp4kFDTnO8-8TdqGkvc1jGx1IyMZVdyZ_g/exec" method="POST">
+                <form id="contactForm" action="https://script.google.com/macros/s/AKfycbxW40Gv91Yjohp3RkTKjO84CrbGJQ-eGlXLfkfPX0BDktcyMFmkO3-9L-J6AFHeJMqAHQ/exec" method="POST">
                     <div class="form-group">
                         <input type="text" name="nombre" placeholder="Nombre" required>
                     </div>
@@ -169,7 +159,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="tiene_filtro">Tengo filtro de agua en mi casa:</label>
+                        <label for="tiene_filtro" style="color: red;">Tengo filtro de agua en mi casa:</label>
                         <select name="tiene_filtro" id="tiene_filtro" required>
                             <option value="No" selected>No</option>
                             <option value="Si">Sí</option>
@@ -188,6 +178,22 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var video = document.getElementById('promoVideo');
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        video.play();
+                        video.volume = 1.0;
+                    } else {
+                        video.pause();
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(video);
+        });
+    </script>
 </body>
 </html>
-
