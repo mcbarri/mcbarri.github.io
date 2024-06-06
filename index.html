@@ -88,22 +88,21 @@
             max-width: 100%;
             border-radius: 10px;
         }
-        #responseMessage {
+        #responseMessage, #successMessage {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
             text-align: center;
-            color: white;
-            font-size: 24px;
-            padding: 20px;
-            box-sizing: border-box;
-            z-index: 1000;
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        #responseMessage {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        #successMessage {
+            background-color: #d4edda;
+            color: #155724;
         }
     </style>
 </head>
@@ -140,9 +139,9 @@
             </div>
             <div class="contact">
                 <h2>Solicita tu Prueba Gratis</h2>
-                <form id="contactForm" action="https://script.google.com/macros/s/AKfycby64zGmMAgtRMRfwGafqct46R-QipdfMttAUietSEQbzppToKg6_C3Iih94wXraVYZgdg/exec" method="POST">
+                <form id="contactForm">
                     <div class="form-group">
-                        <input type="text" name="nombre" placeholder="Nombre" required>
+                        <input type="text" name="nombre" placeholder="Nombre y Apellido" required>
                     </div>
                     <div class="form-group">
                         <input type="tel" name="telefono" placeholder="Teléfono" required>
@@ -169,7 +168,7 @@
                             <option value="Oviedo">Oviedo</option>
                             <option value="Sanford">Sanford</option>
                             <option value="Winter Park">Winter Park</option>
-                            <option value="Winter Springs">Winter Springs</option>
+                            <option value="Winter Garden">Winter Garden</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -180,46 +179,80 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="dia">Día:</label>
+                        <label for="dia">Día de la cita</label>
                         <input type="date" name="dia" required>
                     </div>
+
+                   <div class="form-group">
+    <label for="horario">Horario preferido</label>
+    <select name="horario" required>
+        <option value="">Seleccione una hora</option>
+        <option value="08:00">8:00 AM</option>
+        <option value="09:00">9:00 AM</option>
+        <option value="10:00">10:00 AM</option>
+        <option value="11:00">11:00 AM</option>
+        <option value="12:00">12:00 PM</option>
+        <option value="13:00">1:00 PM</option>
+        <option value="14:00">2:00 PM</option>
+        <option value="15:00">3:00 PM</option>
+        <option value="16:00">4:00 PM</option>
+        <option value="17:00">5:00 PM</option>
+        <option value="18:00">6:00 PM</option>
+        <option value="19:00">7:00 PM</option>
+        <option value="20:00">8:00 PM</option>
+        <option value="21:00">9:00 PM</option>
+        <option value="22:00">10:00 PM</option>
+    </select>
+</div>
+
                     <div class="form-group">
-                        <label for="horario">Horario:</label>
-                        <input type="time" name="horario" required>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit">Programar Cita</button>
+                        <button type="submit">Agendar Cita</button>
                     </div>
                 </form>
+                <div id="responseMessage">Hubo un error al enviar el formulario. Por favor, intente nuevamente.</div>
+                <div id="successMessage">CITA AGENDADA CORRECTAMENTE, ESPERE LLAMADA DE CONFIRMACIÓN!!!</div>
             </div>
         </div>
     </div>
-    <div id="responseMessage">CITA AGENDADA CORRECTAMENTE, ESPERE LLAMADA DE CONFIRMACIÓN!!!</div>
-    <script>
-        document.getElementById('contactForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            var form = event.target;
-            var xhr = new XMLHttpRequest();
-            xhr.open(form.method, form.action, true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        document.getElementById('responseMessage').style.display = 'flex';
-                    } else {
-                        alert('Hubo un error al enviar el formulario. Por favor, intente nuevamente.');
-			document.getElementById('responseMessage').style.display = 'flex';
-
-                    }
-                }
-            };
-            var formData = new FormData(form);
-            var encodedData = [];
-            for (var pair of formData.entries()) {
-                encodedData.push(encodeURIComponent(pair[0]) + '=' + encodeURIComponent(pair[1]));
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        var xhr = new XMLHttpRequest();
+        var url = "https://script.google.com/macros/s/AKfycbwfuI-Ue8C_KJAD-O87dwmoBkKI_hRIknYxoiy8o7M5e-2EFqXX6xPuFMi-5aDF_6ftxw/exec"; // Reemplaza YOUR_SCRIPT_ID con el ID del script de Google Apps
+        xhr.open("POST", url);
+        
+        var formData = new FormData(document.getElementById('contactForm'));
+        var data = new URLSearchParams(formData).toString();
+        
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        
+        xhr.onload = function() {
+            if (xhr.status === 200 && xhr.responseText === 'SUCCESS') {
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('responseMessage').style.display = 'none';
+                
+                // Limpiar los campos del formulario
+                document.getElementById('contactForm').reset();
+                
+                // Reiniciar el video
+                var video = document.getElementById('promoVideo');
+                video.currentTime = 0;
+                video.play();
+            } else {
+                document.getElementById('responseMessage').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
             }
-            xhr.send(encodedData.join('&'));
-        });
-    </script>
+        };
+        
+        xhr.onerror = function() {
+            document.getElementById('responseMessage').style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+        };
+        
+        xhr.send(data);
+    });
+</script>
+
 </body>
 </html>
