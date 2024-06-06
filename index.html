@@ -7,7 +7,7 @@
     <style>
         body { 
             font-family: Arial, sans-serif; 
-            background: linear-gradient(135deg, #0072ff, #ffffff); /* Fondo degradado azul a blanco */
+            background: linear-gradient(135deg, #0072ff, #ffffff); 
             color: #333; 
             margin: 0; 
             padding: 0;
@@ -63,7 +63,7 @@
             width: auto; 
         }
         .form-group label[for="tiene_filtro"] { 
-            color: red; /* Color rojo para el texto del checkbox */
+            color: red; 
         }
         img { 
             max-width: 100%; 
@@ -88,6 +88,23 @@
             max-width: 100%;
             border-radius: 10px;
         }
+        #responseMessage {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -97,7 +114,7 @@
                 <h1 class="title-blue">¿SABES la Calidad del Agua del Grifo en tu Casa?</h1>
                 <img src="imagenes/filtro.png" alt="Filtros de Agua Purificada">
                 <h1 class="title-red">Prueba GRATIS en FLORIDA, Agenda TU CITA!!!!</h1>
-                <p>Prueba tu agua de grifo sin costo y recibe un <strong>obsequio gratis</strong> solo por participar.</p> <!-- Obsequio destacado -->
+                <p>Prueba tu agua de grifo sin costo y recibe un <strong>obsequio gratis</strong> solo por participar.</p>
             </div>
             <div class="video-container">
                 <video id="promoVideo" controls autoplay>
@@ -110,7 +127,7 @@
                 <ul>
                     <li>Descubre la calidad de tu agua de grifo</li>
                     <li>Completamente gratis y sin compromiso</li>
-                    <li>Recibe un obsequio gratis por participar</li> <!-- Obsequio destacado -->
+                    <li>Recibe un obsequio gratis por participar</li>
                 </ul>
             </div>
             <div class="testimonials">
@@ -123,7 +140,7 @@
             </div>
             <div class="contact">
                 <h2>Solicita tu Prueba Gratis</h2>
-                <form id="contactForm" action="https://script.google.com/macros/s/AKfycbxkTZUpZZ1SyUeUN4ZdiHCxtuWyvxQb9020Pyx26_PIgspE7U-lSsGSfB3EG-uyo-f2CA/exec" method="POST">
+                <form id="contactForm" action="https://script.google.com/macros/s/AKfycbxS3mvH9Vzkju2k9rj80rLwWskGI-h1txfrHW-nQF901oiC2DxP2m8geW9kV4N5lJB0OA/exec" method="POST">
                     <div class="form-group">
                         <input type="text" name="nombre" placeholder="Nombre" required>
                     </div>
@@ -139,9 +156,9 @@
                     <div class="form-group">
                         <select name="ciudad" required>
                             <option value="">Seleccione su ciudad</option>
-                            <option value="Orlando">Orlando</option> <!-- Ciudad adicional -->
-                            <option value="Davenport">Davenport</option> <!-- Ciudad adicional -->
-                            <option value="Kissimmee">Kissimmee</option> <!-- Ciudad adicional -->
+                            <option value="Orlando">Orlando</option>
+                            <option value="Davenport">Davenport</option>
+                            <option value="Kissimmee">Kissimmee</option>
                             <option value="Altamonte Springs">Altamonte Springs</option>
                             <option value="Apopka">Apopka</option>
                             <option value="Casselberry">Casselberry</option>
@@ -151,11 +168,8 @@
                             <option value="Ocoee">Ocoee</option>
                             <option value="Oviedo">Oviedo</option>
                             <option value="Sanford">Sanford</option>
-                            <option value="Winter Garden">Winter Garden</option>
                             <option value="Winter Park">Winter Park</option>
                             <option value="Winter Springs">Winter Springs</option>
-                            <option value="Otra Ciudad">Otra Ciudad</option> <!-- Ciudad adicional -->
-                            <!-- Agrega más ciudades según sea necesario -->
                         </select>
                     </div>
                     <div class="form-group">
@@ -166,10 +180,12 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <input type="date" name="dia" placeholder="Fecha de la Cita" required>
+                        <label for="dia">Día:</label>
+                        <input type="date" name="dia" required>
                     </div>
                     <div class="form-group">
-                        <input type="time" name="horario" placeholder="Horario de la Cita" required>
+                        <label for="horario">Horario:</label>
+                        <input type="time" name="horario" required>
                     </div>
                     <div class="form-group">
                         <button type="submit">Programar Cita</button>
@@ -178,21 +194,31 @@
             </div>
         </div>
     </div>
+    <div id="responseMessage">CITA AGENDADA CORRECTAMENTE, ESPERE LLAMADA DE CONFIRMACIÓN!!!</div>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var video = document.getElementById('promoVideo');
-            var observer = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        video.play();
-                        video.volume = 1.0;
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var form = event.target;
+            var xhr = new XMLHttpRequest();
+            xhr.open(form.method, form.action, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        document.getElementById('responseMessage').style.display = 'flex';
                     } else {
-                        video.pause();
-                    }
-                });
-            }, { threshold: 0.5 });
+                        alert('Hubo un error al enviar el formulario. Por favor, intente nuevamente.');
+			document.getElementById('responseMessage').style.display = 'flex';
 
-            observer.observe(video);
+                    }
+                }
+            };
+            var formData = new FormData(form);
+            var encodedData = [];
+            for (var pair of formData.entries()) {
+                encodedData.push(encodeURIComponent(pair[0]) + '=' + encodeURIComponent(pair[1]));
+            }
+            xhr.send(encodedData.join('&'));
         });
     </script>
 </body>
